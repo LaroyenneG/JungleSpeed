@@ -20,8 +20,7 @@ class ServerJungle {
         try {
             server = new ServerTCPJungle(port);
             server.mainLoop();
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             System.err.println("cannot communicate with client");
             System.exit(1);
         }

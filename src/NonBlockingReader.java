@@ -28,8 +28,7 @@ class NonBlockingReader extends Thread {
     public NonBlockingReader(Choice box) {
         try {
             consoleIn = Files.newBufferedReader(Paths.get("/dev/tty"), Charset.defaultCharset());
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("failed to open /dev/tty");
         }
         this.box = box;
@@ -37,15 +36,14 @@ class NonBlockingReader extends Thread {
 
     public void run() {
 
-        String outString="";
+        String outString = "";
         boolean error = false;
-        while((error == false) && (!isInterrupted())) {
+        while ((!error) && (!isInterrupted())) {
             try {
                 outString = consoleIn.readLine();
                 box.setValue(outString);
                 return;
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 error = true;
             }
         }

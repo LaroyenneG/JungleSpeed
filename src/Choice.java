@@ -15,6 +15,7 @@ class Choice {
         value = "";
         empty = true;
     }
+
     public void setValue(String value) {
         this.value = value;
         empty = false;

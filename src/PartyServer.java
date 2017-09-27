@@ -92,19 +92,19 @@ class PartyServer {
          */
         return true;
     }
+
     public synchronized int getState() {
         return state;
     }
+
     public synchronized void setState(int newState) {
         boolean ok = false;
         if (newState == STATE_ENDBROKEN) {
             ok = true;
-        }
-        else {
+        } else {
             if ((state == STATE_BEFORESTART) && (newState == STATE_PLAYING)) {
                 ok = true;
-            }
-            else if ((state == STATE_PLAYING) && (newState == STATE_ENDWIN)) {
+            } else if ((state == STATE_PLAYING) && (newState == STATE_ENDWIN)) {
                 ok = true;
             }
         }
@@ -112,11 +112,11 @@ class PartyServer {
     }
 
 
-     /* playerLeaveParty():
+    /* playerLeaveParty():
 
-       NOTE: this method is called when a thread has exited from partyLoop()
+      NOTE: this method is called when a thread has exited from partyLoop()
 
-     */
+    */
     public synchronized boolean playerLeaveParty(Player p) {
 
         /* A COMPLETER :
@@ -145,11 +145,10 @@ class PartyServer {
 
         lastRevealedCard = currentPlayer.revealCard();
         allRevealedCards = "";
-        for(Player p : players) {
+        for (Player p : players) {
             if (p.revealedCards.size() > 0) {
                 allRevealedCards += p.revealedCards.cards.get(0).card + " ";
-            }
-            else {
+            } else {
                 allRevealedCards += "_ ";
             }
         }
@@ -190,79 +189,62 @@ class PartyServer {
 
             if (order == 10) {
                 result.add(-2); // player made an error since he must put his hand on totem
-            }
-            else if (order == 11) {
+            } else if (order == 11) {
                 result.add(-2); // player made an error since he must put his hand on totem
-            }
-            else if (order == 12) {
+            } else if (order == 12) {
                 if (!totemHand) {
                     result.add(1); // winner
                     totemHand = true;
-                }
-                else {
+                } else {
                     if (played.size() == nbPlayers) {
                         result.add(-1); // looser : last player to put hand on the totem
-                    }
-                    else {
+                    } else {
                         result.add(0); // neither winner, neither looser
                     }
                 }
-            }
-            else {
+            } else {
                 result.add(-2); // player made an error by sending an invalid order
             }
-        }
-        else if (lastRevealedCard.card == 'T') {
+        } else if (lastRevealedCard.card == 'T') {
 
             if (order == 10) {
                 result.add(-1); // player lost but with no consequences
-            }
-            else if (order == 11) {
+            } else if (order == 11) {
                 if (!totemTaken) {
                     result.add(1); // first player to take totem -> winner
                     totemTaken = true;
-                }
-                else {
+                } else {
                     result.add(0); // neither winner, neither looser
                 }
-            }
-            else if (order == 12) {
+            } else if (order == 12) {
                 result.add(-2); // player made an error: should take the totem
-            }
-            else {
+            } else {
                 result.add(-2); // player made an error by sending an invalid order
             }
-        }
-        else {
+        } else {
 
             if (order == 10) {
 
                 if (checkSameCards(player)) {
                     result.add(-1); // looser since he hasn't taken first the totem
-                }
-                else {
+                } else {
                     result.add(0); // neither winner, neither looser since nothing to do
                 }
-            }
-            else if (order == 11) {
+            } else if (order == 11) {
 
                 if (checkSameCards(player)) {
                     if (!totemTaken) {
                         result.add(1); // first player to take totem -> winner
                         totemTaken = true;
-                    }
-                    else {
+                    } else {
                         result.add(-1); // looser since he hasn't taken first the totem
                     }
-                }
-                else {
+                } else {
                     result.add(-2); // should not take the totem -> error -> looser
                 }
-            }
-            else if (order == 12) {
+            } else if (order == 12) {
                 result.add(-2); // player made an error: should take the totem
-            }
-            else {
+            } else {
                 result.add(-2); // player made an error by sending an invalid order
             }
         }
@@ -275,7 +257,7 @@ class PartyServer {
         List<Player> lstErrors = new ArrayList<Player>(); // list of players that made an error this turn
         List<Player> lstLoosers = new ArrayList<Player>(); // list of players that lost (not an error) this turn
 
-        for(int i=0;i< nbPlayers;i++) {
+        for (int i = 0; i < nbPlayers; i++) {
             if (result.get(i) == -2) {
                 lstErrors.add(played.get(i));
             }
@@ -287,26 +269,25 @@ class PartyServer {
         // if some players made an error
         if (!lstErrors.isEmpty()) {
             /* whatever the case, players that made an error are the ultimate loosers:
-	           - collect all revealed cards
+               - collect all revealed cards
 	           - add those under the totem
 	           - distribute them among loosers
             */
             CardPacket errorPack = getAllRevealedCards();
 
-            int nb = (errorPack.size()+1) / lstErrors.size();
-            for(int i=0;i<lstErrors.size();i++) {
+            int nb = (errorPack.size() + 1) / lstErrors.size();
+            for (int i = 0; i < lstErrors.size(); i++) {
                 Player p = lstErrors.get(i);
-                if (i < lstErrors.size()-1) {
+                if (i < lstErrors.size() - 1) {
                     p.takeCards(errorPack.takeXFirst(nb));
                     resultMsg += p.name + " made an error: he takes " + nb + "cards from all players.\n";
-                }
-                else {
+                } else {
                     resultMsg += p.name + " made an error: he takes " + errorPack.size() + "cards from all players.\n";
                     p.takeCards(errorPack.getAll());
                 }
             }
             // now check if someone has won
-            for(Player p :players) {
+            for (Player p : players) {
                 if (p.hasWon()) {
                     resultMsg += p.name + " wins the party";
                     setState(STATE_ENDWIN);
@@ -314,13 +295,13 @@ class PartyServer {
                 }
             }
             currentPlayer = lstErrors.get(loto.nextInt(lstErrors.size()));
-            resultMsg += "\n Next player: "+ currentPlayer.name;
+            resultMsg += "\n Next player: " + currentPlayer.name;
         }
         // else if no player made an error
         else {
 
             int indexWinner = -1;
-            for(Integer r : result) {
+            for (Integer r : result) {
                 if (r == 1) {
                     indexWinner = r;
                     break;
@@ -330,7 +311,7 @@ class PartyServer {
             if (indexWinner == -1) {
                 resultMsg += "Nobody won this turn\n";
                 currentPlayer = players.get(currentPlayer.id % nbPlayers);
-                resultMsg += "\n Next player: "+ currentPlayer.name;
+                resultMsg += "\n Next player: " + currentPlayer.name;
             }
             // else if a player is the winner : result depends on the last revealed cards
             else {
@@ -346,7 +327,7 @@ class PartyServer {
                 // else if winner wins on a hand on totem
                 else if (lastRevealedCard.card == 'H') {
                     Player looser = lstLoosers.get(0); // normally there should be a single player in lstLoosers list
-                    resultMsg += "He gives his cards and those under totem to "+looser.name+".\n";
+                    resultMsg += "He gives his cards and those under totem to " + looser.name + ".\n";
                     CardPacket winnerPack = getWinnerRevealedCards();
                     looser.takeCards(winnerPack.getAll());
                 }
@@ -354,21 +335,20 @@ class PartyServer {
                 else {
                     // distribute winner's revealed card to loosers
                     CardPacket winnerPack = getWinnerRevealedCards();
-                    int nb = (winnerPack.size()+1) / lstLoosers.size();
-                    for(int i=0;i<lstLoosers.size();i++) {
+                    int nb = (winnerPack.size() + 1) / lstLoosers.size();
+                    for (int i = 0; i < lstLoosers.size(); i++) {
                         Player p = players.get(i);
-                        if (i < lstLoosers.size()-1) {
+                        if (i < lstLoosers.size() - 1) {
                             p.takeCards(winnerPack.takeXFirst(nb));
-                            resultMsg += p.name + " lost his a duel with "+turnWinner.name+". He takes " + nb + "cards.\n";
-                        }
-                        else {
+                            resultMsg += p.name + " lost his a duel with " + turnWinner.name + ". He takes " + nb + "cards.\n";
+                        } else {
                             p.takeCards(winnerPack.getAll());
-                            resultMsg += p.name + " lost his a duel with "+turnWinner.name+". He takes " + winnerPack.size() + "cards.\n";
+                            resultMsg += p.name + " lost his a duel with " + turnWinner.name + ". He takes " + winnerPack.size() + "cards.\n";
                         }
                     }
                 }
                 // now check if someone has won
-                for(Player p :players) {
+                for (Player p : players) {
                     if (p.hasWon()) {
                         resultMsg += p.name + " wins the party";
                         setState(STATE_ENDWIN);
@@ -376,7 +356,7 @@ class PartyServer {
                     }
                 }
                 currentPlayer = lstLoosers.get(loto.nextInt(lstLoosers.size()));
-                resultMsg += "\n Next player: "+ currentPlayer.name;
+                resultMsg += "\n Next player: " + currentPlayer.name;
             }
         }
 
@@ -399,7 +379,7 @@ class PartyServer {
     private CardPacket getAllRevealedCards() {
 
         CardPacket packet = new CardPacket();
-        for(Player p : players) {
+        for (Player p : players) {
             packet.addCards(p.giveRevealedCards());
         }
         packet.addCards(underTotem);

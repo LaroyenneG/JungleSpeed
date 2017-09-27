@@ -24,7 +24,7 @@ class ServerTCPJungle {
         while (true) {
 
             comm = conn.accept();
-            System.out.println("connection with "+comm.getRemoteSocketAddress());
+            System.out.println("connection with " + comm.getRemoteSocketAddress());
             ServerThreadJungle t = new ServerThreadJungle(comm, game, idThread++);
             t.start();
         }

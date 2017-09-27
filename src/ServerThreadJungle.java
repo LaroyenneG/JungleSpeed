@@ -33,10 +33,7 @@ class ServerThreadJungle extends Thread {
             oos.flush();
             ois = new ObjectInputStream(comm.getInputStream());
             initLoop();
-        } catch (IOException e) {
-            errorReport("cannot create streams or player");
-            return;
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             errorReport("cannot create streams or player");
             return;
         }
@@ -57,6 +54,18 @@ class ServerThreadJungle extends Thread {
             S'il est invalide, on renvoie au client un booléen valant false. Si il est valide, on crée un joueur et on renvoie
             au client true.
          */
+
+        boolean success;
+        do {
+            Object object = ois.readObject();
+            if (object instanceof String) {
+                String name = (String) object;
+
+                success = game.createPlayer(name);
+            } else {
+                success = false;
+            }
+        } while (!success);
     }
 
     public void requestLoop() throws IOException {
@@ -165,11 +174,11 @@ class ServerThreadJungle extends Thread {
     }
 
     private void debugReport(String msg) {
-        System.err.println("Thread ["+idThread+"] - "+msg);
+        System.err.println("Thread [" + idThread + "] - " + msg);
     }
 
     private void errorReport(String msg) {
-        System.err.println("Thread ["+idThread+"] - "+msg);
-        System.err.println("Thread ["+idThread+"] - "+msg);
+        System.err.println("Thread [" + idThread + "] - " + msg);
+        System.err.println("Thread [" + idThread + "] - " + msg);
     }
 }

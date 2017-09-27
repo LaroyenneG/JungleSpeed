@@ -10,16 +10,16 @@ public class Semaphore {
     }
 
     public synchronized void put(int nb) {
-        nbTokens +=  nb;
+        nbTokens += nb;
         notifyAll();
     }
 
     public synchronized void get(int nb) {
-        while(nbTokens < nb) {
+        while (nbTokens < nb) {
             try {
                 wait();
+            } catch (InterruptedException e) {
             }
-            catch(InterruptedException e) {}
         }
         nbTokens -= nb;
     }

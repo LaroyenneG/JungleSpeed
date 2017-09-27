@@ -22,12 +22,7 @@ class ClientJungle {
             client = new ClientTCPJungle(args[0], port);
             client.initLoop(); // loop to send a pseudo to server
             client.requestLoop(); // loop to send request (list parties, create party, join party, ...)
-        }
-        catch(IOException e) {
-            System.err.println("cannot communicate with server");
-            System.exit(1);
-        }
-        catch(ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.err.println("cannot communicate with server");
             System.exit(1);
         }

@@ -58,4 +58,5 @@ class Player {
         if ((hiddenCards.size() == 0) && (revealedCards.size() == 0)) return true;
         return false;
     }
+
 }

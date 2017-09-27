@@ -25,5 +25,19 @@ class Game {
            - une méthode pour supprimer une partie
            - une méthode qui permet à un joueur existant de rejoindre une partie existante.
      */
+
+    public boolean createPlayer(String name) {
+
+        for(Player player : players) {
+            if(player.name.equals(name)) {
+                return false;
+            }
+        }
+
+        players.add(new Player(name));
+
+        return true;
+    }
+
 }
     

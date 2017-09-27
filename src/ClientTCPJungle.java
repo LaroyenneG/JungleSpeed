@@ -23,17 +23,25 @@ class ClientTCPJungle {
 
     }
 
-    public void initLoop() throws IOException,ClassNotFoundException {
+    public void initLoop() throws IOException, ClassNotFoundException {
 
 		/* A COMPLETER :
-			cette méthode doit demander au joueur de taper un pseudo au clavier
+            cette méthode doit demander au joueur de taper un pseudo au clavier
 			puis l'envoyer au serveur (donc au thread associé à ce client).
 			Ce dernier répond par un booléen indiquant si le pseudo est valide ou non (= déjà pris)
 			Si c'est non, on repète depuis le début. Si oui, on sort de la méthode.
 		 */
+
+        System.out.print("Choice a pseudo :");
+        String pseudo;
+        do {
+            pseudo = consoleIn.readLine();
+            oos.writeObject(pseudo);
+        } while (!ois.readBoolean());
+
     }
 
-    public void requestLoop() throws IOException,ClassNotFoundException {
+    public void requestLoop() throws IOException, ClassNotFoundException {
 
         String reqLine = null;
         String[] reqParts = null;
@@ -49,7 +57,7 @@ class ClientTCPJungle {
             if (reqParts[0].equals("list")) {
 
 				/* A COMPLETER :
-				   - envoi de la requête,
+                   - envoi de la requête,
 				   - réception du résultat (sous forme de List<String>) et affichage
 				 */
             }
@@ -57,26 +65,25 @@ class ClientTCPJungle {
             else if (reqParts[0].equals("create")) {
 
 				/* A COMPLETER :
-				   - envoi de la requête, le nombre de joueurs se trouvant dans reqParts[1]
+                   - envoi de la requête, le nombre de joueurs se trouvant dans reqParts[1]
 				   - réception d'un booléen indiquant si c'est ok ou non
 				   - si ok, on appelle la méthode initiant une partie
 				 */
-            }
-            else if (reqParts[0].equals("vs")) {
-				/* A COMPLETER :
+            } else if (reqParts[0].equals("vs")) {
+                /* A COMPLETER :
 				   - envoi de la requête, le n° de partie se trouvant dans reqParts[1]
 				   - réception d'un booléen indiquant si c'est ok ou non
 				   - si ok, on appelle la méthode initiant une partie
 				 */
-            }
-            else if (reqParts[0].equals("quit")) {
+            } else if (reqParts[0].equals("quit")) {
                 stop = true;
             }
         }
     }
 
 
-    /* partyLoop(); initiate a new party
+    /*
+     * partyLoop(); initiate a new party
      */
     private void partyLoop() {
 

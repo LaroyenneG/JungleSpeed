@@ -25,7 +25,7 @@ class CardPacket {
     public CardPacket(int nbPlayers) {
         Card c;
         cards = new ArrayList<Card>();
-        for(int i=0;i<nbPlayers;i++) {
+        for (int i = 0; i < nbPlayers; i++) {
             c = new Card('O');
             cards.add(c);
             c = new Card('Q');
@@ -75,7 +75,7 @@ class CardPacket {
     }
 
     public void addFirst(Card c) {
-        cards.add(0,c);
+        cards.add(0, c);
     }
 
     public Card removeFirst() {
@@ -84,7 +84,7 @@ class CardPacket {
 
     public void shuffle() {
         int index;
-        for(int i=0;i<200;i++) {
+        for (int i = 0; i < 200; i++) {
             index = loto.nextInt(cards.size());
             Card c = cards.remove(index);
             cards.add(c);
@@ -94,7 +94,7 @@ class CardPacket {
     public List<Card> takeXFirst(int nb) {
         List<Card> heap = new ArrayList<Card>();
         Card c;
-        for(int i=0;i<nb;i++) {
+        for (int i = 0; i < nb; i++) {
             c = cards.remove(0);
             heap.add(c);
         }
@@ -102,7 +102,7 @@ class CardPacket {
     }
 
     public Card get(int index) {
-        if ((index <0) || (index >= cards.size())) return null;
+        if ((index < 0) || (index >= cards.size())) return null;
 
         return cards.get(index);
     }
