@@ -7,7 +7,7 @@ import java.io.*;
 class ClientJungle {
 
     public static void usage() {
-        System.err.println("usage : java Client server_ip port");
+        System.err.println("usage : java "+ClientJungle.class.getSimpleName()+" server_ip port");
         System.exit(1);
     }
 

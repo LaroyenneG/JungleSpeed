@@ -7,6 +7,7 @@ import java.io.*;
 class ServerJungle {
 
     public static void usage() {
+        System.out.println("usage : java "+ServerJungle.class.getSimpleName()+" port");
         System.exit(1);
     }
 

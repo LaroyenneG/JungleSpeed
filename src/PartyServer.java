@@ -73,6 +73,9 @@ class PartyServer {
     /* A COMPLETER :
         definition des getters pour les attributs qui doivent être visibles à l'extérieur de la classe.
      */
+    public int getRemainingPlaces() {
+        return nbPlayers-players.size();
+    }
 
     /* A COMPLETER :
         definition des méthodes manipulant les sémaphores
@@ -402,5 +405,10 @@ class PartyServer {
         underTotem.clear();
 
         return packet;
+    }
+
+    @Override
+    public String toString() {
+        return creator.name+":"+getRemainingPlaces();
     }
 }

@@ -31,14 +31,14 @@ class ClientTCPJungle {
 			Ce dernier répond par un booléen indiquant si le pseudo est valide ou non (= déjà pris)
 			Si c'est non, on repète depuis le début. Si oui, on sort de la méthode.
 		 */
-
-        System.out.print("Choice a pseudo :");
-        String pseudo;
+        String pseudo = null;
         do {
+            System.out.print("Choice a pseudo :");
             pseudo = consoleIn.readLine();
             oos.writeObject(pseudo);
         } while (!ois.readBoolean());
 
+        System.out.println("Welcome " + pseudo);
     }
 
     public void requestLoop() throws IOException, ClassNotFoundException {
@@ -46,6 +46,7 @@ class ClientTCPJungle {
         String reqLine = null;
         String[] reqParts = null;
         boolean stop = false;
+
 
         while (!stop) {
 
@@ -60,7 +61,26 @@ class ClientTCPJungle {
                    - envoi de la requête,
 				   - réception du résultat (sous forme de List<String>) et affichage
 				 */
+                oos.writeInt(1);
+                oos.flush();
+
+                Object answer = ois.readObject();
+                if (!(answer instanceof List)) {
+                    System.err.println("Invalid answer");
+                    System.exit(1);
+                }
+
+                List<String> partyList = (List<String>) answer;
+
+                for (String party : partyList) {
+                    String[] data = party.split(":");
+                    if (data.length == 2) {
+                        System.out.println("- Parie créée par " + data[0] + ", reste " + data[1] + " place disponibles");
+                    }
+                }
+
             }
+
             // request "create" : create a new party and wait that it starts
             else if (reqParts[0].equals("create")) {
 
@@ -69,12 +89,19 @@ class ClientTCPJungle {
 				   - réception d'un booléen indiquant si c'est ok ou non
 				   - si ok, on appelle la méthode initiant une partie
 				 */
+
+                oos.writeInt(2);
+                oos.flush();
+
             } else if (reqParts[0].equals("vs")) {
                 /* A COMPLETER :
-				   - envoi de la requête, le n° de partie se trouvant dans reqParts[1]
+                   - envoi de la requête, le n° de partie se trouvant dans reqParts[1]
 				   - réception d'un booléen indiquant si c'est ok ou non
 				   - si ok, on appelle la méthode initiant une partie
 				 */
+                oos.writeInt(3);
+                oos.flush();
+
             } else if (reqParts[0].equals("quit")) {
                 stop = true;
             }
@@ -90,7 +117,7 @@ class ClientTCPJungle {
         Choice choice = new Choice(); // l'objet partagé avec le thread de saisie
 
 		/* A COMPLETER :
-			Cette méthode commence par recevoir le n° du joueur (1, 2, ...) au sein de la partie.
+            Cette méthode commence par recevoir le n° du joueur (1, 2, ...) au sein de la partie.
 			Ensuite, tant que la partie n'est pas finie (que ce soit une fin normale, ou bien une
 			fin provoquée par une déconnexion), on répète le même code pour chaque tour de jeu :
 				- réception d'un String représentant les cartes visibles

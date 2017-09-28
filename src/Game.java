@@ -28,8 +28,8 @@ class Game {
 
     public boolean createPlayer(String name) {
 
-        for(Player player : players) {
-            if(player.name.equals(name)) {
+        for (Player player : players) {
+            if (player.name.equals(name)) {
                 return false;
             }
         }
@@ -37,6 +37,17 @@ class Game {
         players.add(new Player(name));
 
         return true;
+    }
+
+    public List<String> getAllParty() {
+
+        List<String> partyList = new ArrayList<>();
+        for (PartyServer party : parties) {
+            partyList.add(party.toString());
+
+        }
+
+        return partyList;
     }
 
 }

@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 class ServerThreadJungle extends Thread {
@@ -57,14 +58,18 @@ class ServerThreadJungle extends Thread {
 
         boolean success;
         do {
+
             Object object = ois.readObject();
             if (object instanceof String) {
-                String name = (String) object;
 
+                String name = (String) object;
                 success = game.createPlayer(name);
             } else {
                 success = false;
             }
+
+            oos.writeBoolean(success);
+            oos.flush();
         } while (!success);
     }
 
@@ -72,7 +77,7 @@ class ServerThreadJungle extends Thread {
         debugReport("entering requestLoop().");
 
         /* A COMPLETER :
-            Cette methode attend les 3 requetes possibles et appelle les méthode associées:
+            Cette methode attend les 3 requetes possibles et appelle les méthodes associées:
                 - 1 = listes des parties
                 - 2 = créer une partie
                 - 3 = rejoindre une partie
@@ -85,6 +90,20 @@ class ServerThreadJungle extends Thread {
          Pour l'autre solution, si elle est mise correctement en place, il ne faut surtout pas sortir de requestLoop().
 
          */
+
+        int idRequest = ois.readInt();
+
+        switch (idRequest) {
+            case 1 :
+                List<String> partyList = game.getAllParty();
+                oos.writeObject(partyList);
+                break;
+
+            default:
+                debugReport("Bad request");
+                break;
+        }
+
     }
 
     public void requestListParties() throws IOException {
