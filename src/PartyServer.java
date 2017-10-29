@@ -68,13 +68,20 @@ class PartyServer {
             - ajouter le créateur à la partie (cf. addPlayer() )
             - creation des sémaphore et initialisation des compteurs.
          */
+
+        players = new ArrayList<Player>();
+        allCards=new CardPacket(nbPlayers);
+
+        addPlayer(creator);
+
+
     }
 
     /* A COMPLETER :
         definition des getters pour les attributs qui doivent être visibles à l'extérieur de la classe.
      */
     public int getRemainingPlaces() {
-        return nbPlayers-players.size();
+        return nbPlayers - players.size();
     }
 
     /* A COMPLETER :
@@ -93,6 +100,15 @@ class PartyServer {
             une taille de 1 et le créateur reçoit l'id 1.
 
          */
+
+        if (getRemainingPlaces() <= 0) {
+            return false;
+        }
+
+        p.initializeParty(this,players.size(), allCards.cards);
+        players.add(p);
+
+
         return true;
     }
 
@@ -407,8 +423,8 @@ class PartyServer {
         return packet;
     }
 
-    @Override
+
     public String toString() {
-        return creator.name+":"+getRemainingPlaces();
+        return creator.name + ":" + getRemainingPlaces();
     }
 }

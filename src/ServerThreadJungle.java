@@ -61,9 +61,9 @@ class ServerThreadJungle extends Thread {
         do {
             Object object = ois.readObject();
             if (object instanceof String) {
-
                 String name = (String) object;
-                success = game.createPlayer(name);
+                player = game.createPlayer(name);
+                success = (player != null);
             } else {
                 success = false;
             }
@@ -118,6 +118,7 @@ class ServerThreadJungle extends Thread {
 
         List<String> partyList = game.getAllParty();
         oos.writeObject(partyList);
+        oos.flush();
     }
 
     public void requestCreateParty() throws IOException {
@@ -159,6 +160,23 @@ class ServerThreadJungle extends Thread {
                 - rentrer dans la boucle de partie
                 - signaler que le joueur quitte la partie et si c'est le dernier, supprimer la partie de game.
          */
+
+        int idParty = ois.readInt();
+
+        PartyServer partyServer = game.getParty(idParty);
+
+        boolean status = false;
+
+        if (partyServer != null) {
+            status = partyServer.addPlayer(player);
+        }
+
+        oos.writeBoolean(status);
+        oos.flush();
+
+        if (status) {
+            partyLoop();
+        }
     }
 
     public boolean isPartyOver() {

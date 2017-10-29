@@ -26,25 +26,26 @@ class Game {
            - une méthode qui permet à un joueur existant de rejoindre une partie existante.
      */
 
-    public boolean createPlayer(String name) {
+    public Player createPlayer(String name) {
 
         for (Player player : players) {
             if (player.name.equals(name)) {
-                return false;
+                return null;
             }
         }
 
-        players.add(new Player(name));
+        Player newPlayer = new Player(name);
 
-        return true;
+        players.add(newPlayer);
+
+        return newPlayer;
     }
 
     public List<String> getAllParty() {
 
         List<String> partyList = new ArrayList<>();
-        for (PartyServer party : parties) {
-            partyList.add(party.toString());
-
+        for (int i = 0; i < parties.size(); i++) {
+            partyList.add(i + ":"+parties.get(i));
         }
 
         return partyList;
@@ -60,12 +61,12 @@ class Game {
     }
 
     public boolean createParty(Player creator, int nbPlayer) {
-        if(nbPlayer < 1) {
+        if (nbPlayer <= 1) {
             return false;
         }
 
-        for(PartyServer partyServer : parties) {
-            if(partyServer.creator.equals(creator)) {
+        for (PartyServer partyServer : parties) {
+            if (partyServer.creator.equals(creator)) {
                 return false;
             }
         }
@@ -77,6 +78,11 @@ class Game {
     }
 
     public PartyServer getParty(int id) {
+
+        if (id < 0 || id >= parties.size()) {
+            return null;
+        }
+
         return parties.get(id);
     }
 

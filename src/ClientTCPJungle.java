@@ -72,10 +72,11 @@ class ClientTCPJungle {
 
                 List<String> partyList = (List<String>) answer;
 
+                System.out.println("List of party :");
                 for (String party : partyList) {
                     String[] data = party.split(":");
-                    if (data.length == 2) {
-                        System.out.println("- Parie créée par " + data[0] + ", reste " + data[1] + " place disponibles");
+                    if (data.length == 3) {
+                        System.out.println("\t- Party n°" + data[0] + " create by " + data[1] + ", place free : " + data[2]);
                     }
                 }
 
@@ -91,22 +92,30 @@ class ClientTCPJungle {
 				 */
 
                 if (reqParts.length != 2) {
-                    System.err.println("usage : create <nombre de joueur>");
+                    System.err.println("usage : create <number of players>");
                     continue;
                 }
 
-                int nbPlayer = Integer.parseInt(reqParts[1]);
+                int nbPlayer;
+                try {
+                    nbPlayer = Integer.parseInt(reqParts[1]);
+                } catch (NumberFormatException e) {
+                    System.err.println("This command require a integer parameter");
+                    continue;
+                }
 
                 oos.writeInt(2);
                 oos.writeInt(nbPlayer);
                 oos.flush();
 
-                if (!ois.readBoolean()) {
-                    System.err.println("Impossible de créer la partie");
-                    continue;
+                if (ois.readBoolean()) {
+                    System.out.println("Your party was created");
+                    partyLoop();
+
+                } else {
+                    System.err.println("Cannot create party");
                 }
 
-                partyLoop();
 
             } else if (reqParts[0].equals("vs")) {
                 /* A COMPLETER :
@@ -115,16 +124,29 @@ class ClientTCPJungle {
 				   - si ok, on appelle la méthode initiant une partie
 				 */
 
-                if(reqParts.length != 2) {
-                    System.err.println("usage : vs <id partie>");
+                if (reqParts.length != 2) {
+                    System.err.println("usage : vs <party id>");
                     continue;
                 }
 
-                int numParty = Integer.parseInt(reqParts[1]);
+                int numParty;
+                try {
+                    numParty = Integer.parseInt(reqParts[1]);
+                } catch (NumberFormatException e) {
+                    System.err.println("This command require a integer parameter");
+                    continue;
+                }
 
                 oos.writeInt(3);
                 oos.writeInt(numParty);
                 oos.flush();
+
+                if (ois.readBoolean()) {
+                    System.out.println("You have join the party");
+                    partyLoop();
+                } else {
+                    System.err.println("Cannot join this party");
+                }
 
             } else if (reqParts[0].equals("quit")) {
                 stop = true;
