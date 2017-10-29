@@ -50,5 +50,35 @@ class Game {
         return partyList;
     }
 
+    public void deletePlayer(Player player) {
+        for (PartyServer partyServer : parties) {
+            if (partyServer.players.contains(player)) {
+                partyServer.playerLeaveParty(player);
+            }
+        }
+        players.remove(player);
+    }
+
+    public boolean createParty(Player creator, int nbPlayer) {
+        if(nbPlayer < 1) {
+            return false;
+        }
+
+        for(PartyServer partyServer : parties) {
+            if(partyServer.creator.equals(creator)) {
+                return false;
+            }
+        }
+
+        PartyServer partyServer = new PartyServer(creator, nbPlayer);
+        parties.add(partyServer);
+
+        return true;
+    }
+
+    public PartyServer getParty(int id) {
+        return parties.get(id);
+    }
+
 }
     

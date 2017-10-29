@@ -59,4 +59,17 @@ class Player {
         return false;
     }
 
+    public boolean equals(Object object) {
+
+        if (!(object instanceof Player)) {
+            return false;
+        }
+
+        if (!name.equals(((Player) object).name)) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

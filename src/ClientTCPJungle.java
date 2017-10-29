@@ -90,8 +90,23 @@ class ClientTCPJungle {
 				   - si ok, on appelle la méthode initiant une partie
 				 */
 
+                if (reqParts.length != 2) {
+                    System.err.println("usage : create <nombre de joueur>");
+                    continue;
+                }
+
+                int nbPlayer = Integer.parseInt(reqParts[1]);
+
                 oos.writeInt(2);
+                oos.writeInt(nbPlayer);
                 oos.flush();
+
+                if (!ois.readBoolean()) {
+                    System.err.println("Impossible de créer la partie");
+                    continue;
+                }
+
+                partyLoop();
 
             } else if (reqParts[0].equals("vs")) {
                 /* A COMPLETER :
@@ -99,7 +114,16 @@ class ClientTCPJungle {
 				   - réception d'un booléen indiquant si c'est ok ou non
 				   - si ok, on appelle la méthode initiant une partie
 				 */
+
+                if(reqParts.length != 2) {
+                    System.err.println("usage : vs <id partie>");
+                    continue;
+                }
+
+                int numParty = Integer.parseInt(reqParts[1]);
+
                 oos.writeInt(3);
+                oos.writeInt(numParty);
                 oos.flush();
 
             } else if (reqParts[0].equals("quit")) {

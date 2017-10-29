@@ -44,6 +44,7 @@ class ServerThreadJungle extends Thread {
             /* A COMPLETER :
                 - supprimer le joueur de game
              */
+            game.deletePlayer(player);
             debugReport("client disconnected while in request loop.");
         }
     }
@@ -58,7 +59,6 @@ class ServerThreadJungle extends Thread {
 
         boolean success;
         do {
-
             Object object = ois.readObject();
             if (object instanceof String) {
 
@@ -94,9 +94,16 @@ class ServerThreadJungle extends Thread {
         int idRequest = ois.readInt();
 
         switch (idRequest) {
-            case 1 :
-                List<String> partyList = game.getAllParty();
-                oos.writeObject(partyList);
+            case 1:
+                requestListParties();
+                break;
+
+            case 2:
+                requestCreateParty();
+                break;
+
+            case 3:
+                requestJoinParty();
                 break;
 
             default:
@@ -109,9 +116,8 @@ class ServerThreadJungle extends Thread {
     public void requestListParties() throws IOException {
         debugReport("processing list parties request.");
 
-        /* A COMPLETER
-
-         */
+        List<String> partyList = game.getAllParty();
+        oos.writeObject(partyList);
     }
 
     public void requestCreateParty() throws IOException {
@@ -126,6 +132,18 @@ class ServerThreadJungle extends Thread {
                 - rentrer dans la boucle de partie
                 - signaler que le joueur quitte la partie et si c'est le dernier, supprimer la partie de game.
          */
+
+        int nbPlayer = ois.readInt();
+
+        boolean status = game.createParty(player, nbPlayer);
+
+        oos.writeBoolean(status);
+        oos.flush();
+
+        if (status) {
+            partyLoop();
+        }
+
     }
 
     public void requestJoinParty() throws IOException {
@@ -197,7 +215,6 @@ class ServerThreadJungle extends Thread {
     }
 
     private void errorReport(String msg) {
-        System.err.println("Thread [" + idThread + "] - " + msg);
         System.err.println("Thread [" + idThread + "] - " + msg);
     }
 }
