@@ -226,6 +226,9 @@ class ServerThreadJungle extends Thread {
                 - le fait de tester régulièrement si la partie est finie permet d'éviter de faire des
                 traitement inutiles pour les threads qui sont encore connectés à leur client.
          */
+
+        oos.writeInt(player.id);
+        oos.flush();
     }
 
     private void debugReport(String msg) {

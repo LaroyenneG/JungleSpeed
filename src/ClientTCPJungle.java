@@ -158,7 +158,7 @@ class ClientTCPJungle {
     /*
      * partyLoop(); initiate a new party
      */
-    private void partyLoop() {
+    private void partyLoop() throws IOException {
 
         Choice choice = new Choice(); // l'objet partagé avec le thread de saisie
 
@@ -212,6 +212,9 @@ class ClientTCPJungle {
 
 			 Cependant, vous pouvez implémenter la version améliorée en modifiant le protocole à votre guise.
 		 */
+
+        idPlayer = ois.readInt();
+
 
     }
 }
